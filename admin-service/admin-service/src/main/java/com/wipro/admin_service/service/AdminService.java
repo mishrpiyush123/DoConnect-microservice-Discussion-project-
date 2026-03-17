@@ -1,0 +1,32 @@
+package com.wipro.admin_service.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wipro.admin_service.entity.Admin;
+import com.wipro.admin_service.repository.AdminRepository;
+
+@Service
+public class AdminService {
+
+    @Autowired
+    private AdminRepository adminRepository;
+
+    public Admin saveAdmin(Admin admin) {
+        return adminRepository.save(admin);
+    }
+
+    public List<Admin> getAllAdmins() {
+        return adminRepository.findAll();
+    }
+
+    public Admin getAdminById(Long id) {
+        return adminRepository.findById(id).orElse(null);
+    }
+
+    public void deleteAdmin(Long id) {
+        adminRepository.deleteById(id);
+    }
+}
