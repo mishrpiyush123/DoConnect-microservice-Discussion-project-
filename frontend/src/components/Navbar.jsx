@@ -3,64 +3,89 @@ import { Link, useNavigate } from "react-router-dom";
 function Navbar() {
   const navigate = useNavigate();
 
-  const currentUser = JSON.parse(localStorage.getItem("doconnect_currentUser") || "null");
-  const currentAdmin = JSON.parse(localStorage.getItem("doconnect_admin") || "null");
-
-  const displayName =
-    currentUser?.username || currentUser?.name || currentAdmin?.email || "User";
+  const userEmail = localStorage.getItem("userEmail") || "User";
+  const role = localStorage.getItem("role");
 
   const handleLogout = () => {
-    localStorage.removeItem("doconnect_currentUser");
-    localStorage.removeItem("doconnect_admin");
-    sessionStorage.clear();
+    localStorage.clear();
     navigate("/");
   };
 
   return (
-    <nav
-      style={{
-        backgroundColor: "#16212b",
-        color: "white",
-        padding: "20px 0",
-        textAlign: "center",
-      }}
-    >
-      <h1 style={{ margin: 0, fontWeight: "bold", fontSize: "48px" }}>DoConnect</h1>
+    <nav style={styles.navbar}>
+      <h1 style={styles.logo}>DoConnect</h1>
 
-      <div style={{ marginTop: "15px" }}>
-        <Link to="/questions" style={{ color: "white", margin: "0 18px", textDecoration: "none", fontWeight: "600" }}>
-          Questions
-        </Link>
-        <Link to="/ask" style={{ color: "white", margin: "0 18px", textDecoration: "none", fontWeight: "600" }}>
-          Ask Question
-        </Link>
-        <Link to="/chat" style={{ color: "white", margin: "0 18px", textDecoration: "none", fontWeight: "600" }}>
-          Chat
-        </Link>
-        {currentAdmin && (
-          <Link to="/admin-dashboard" style={{ color: "white", margin: "0 18px", textDecoration: "none", fontWeight: "600" }}>
+      <div style={styles.linksContainer}>
+        <Link to="/" style={styles.link}>Home</Link>
+        <Link to="/questions" style={styles.link}>Questions</Link>
+        <Link to="/ask-question" style={styles.link}>Ask Question</Link>
+        <Link to="/chat" style={styles.link}>Chat</Link>
+
+        {role === "ADMIN" && (
+          <Link to="/admin-dashboard" style={styles.link}>
             Admin Dashboard
           </Link>
         )}
       </div>
 
-      <div style={{ marginTop: "12px" }}>
-        <span style={{ marginRight: "20px", fontWeight: "500" }}>{displayName}</span>
-        <button
-          onClick={handleLogout}
-          style={{
-            background: "none",
-            border: "none",
-            color: "#ff7b7b",
-            cursor: "pointer",
-            fontWeight: "600",
-          }}
-        >
+      <div style={styles.userSection}>
+        <span style={styles.userName}>{userEmail}</span>
+        <button onClick={handleLogout} style={styles.logoutButton}>
           Logout
         </button>
       </div>
     </nav>
   );
 }
+
+const styles = {
+  navbar: {
+    backgroundColor: "#16212b",
+    color: "white",
+    padding: "16px 24px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: "15px",
+  },
+  logo: {
+    margin: 0,
+    fontWeight: "bold",
+    fontSize: "28px",
+  },
+  linksContainer: {
+    display: "flex",
+    gap: "14px",
+    flexWrap: "wrap",
+    alignItems: "center",
+  },
+  link: {
+    color: "white",
+    textDecoration: "none",
+    fontWeight: "600",
+    padding: "8px 12px",
+    borderRadius: "6px",
+  },
+  userSection: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    flexWrap: "wrap",
+  },
+  userName: {
+    fontWeight: "500",
+    fontSize: "16px",
+  },
+  logoutButton: {
+    background: "none",
+    border: "1px solid #ff7b7b",
+    color: "#ff7b7b",
+    cursor: "pointer",
+    fontWeight: "600",
+    padding: "8px 12px",
+    borderRadius: "6px",
+  },
+};
 
 export default Navbar;

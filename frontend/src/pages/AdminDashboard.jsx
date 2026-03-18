@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getApprovedQuestions } from "../services/questionService";
 
-function QuestionsPage() {
+function AdminDashboard() {
   const [questions, setQuestions] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -13,6 +13,7 @@ function QuestionsPage() {
         setQuestions(response.data || []);
       } catch (err) {
         console.error("Error loading approved questions:", err);
+        setQuestions([]);
       }
     };
 
@@ -24,58 +25,35 @@ function QuestionsPage() {
   );
 
   return (
-    <div style={{ padding: "40px 120px" }}>
-      <h2 style={{ marginBottom: "20px" }}>Questions</h2>
+    <div style={styles.container}>
+      <h2 style={styles.heading}>Admin Dashboard</h2>
 
-      <div style={{ marginBottom: "30px" }}>
+      <div style={styles.searchBox}>
         <input
           type="text"
           placeholder="Search questions..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          style={{
-            padding: "10px",
-            width: "280px",
-            marginRight: "10px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-          }}
+          style={styles.input}
         />
-        <button
-          style={{
-            padding: "10px 16px",
-            backgroundColor: "#66c2ff",
-            border: "none",
-            color: "white",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          Search
-        </button>
       </div>
 
       {filteredQuestions.length === 0 ? (
         <p>No approved questions found.</p>
       ) : (
         filteredQuestions.map((q) => (
-          <div key={q.id} style={{ marginBottom: "30px" }}>
-            <h3 style={{ marginBottom: "5px" }}>
-              <Link
-                to={`/questions/${q.id}`}
-                style={{ textDecoration: "none", color: "#2563eb" }}
-              >
+          <div key={q.id} style={styles.card}>
+            <h3 style={styles.title}>
+              <Link to={`/question/${q.id}`} style={styles.link}>
                 {q.title}
               </Link>
             </h3>
 
-            <p style={{ color: "#666", margin: "5px 0" }}>
-              Asked by {q.userName || "user"}
+            <p style={styles.userText}>
+              Asked by {q.userName || q.username || "user"}
             </p>
 
-            <p style={{ color: "green", fontWeight: "600", margin: 0 }}>
-              APPROVED
-            </p>
+            <p style={styles.status}>APPROVED</p>
           </div>
         ))
       )}
@@ -83,4 +61,46 @@ function QuestionsPage() {
   );
 }
 
-export default QuestionsPage;
+const styles = {
+  container: {
+    padding: "20px",
+  },
+  heading: {
+    marginBottom: "20px",
+  },
+  searchBox: {
+    marginBottom: "20px",
+  },
+  input: {
+    width: "100%",
+    maxWidth: "400px",
+    padding: "10px",
+    border: "1px solid #ccc",
+    borderRadius: "6px",
+  },
+  card: {
+    border: "1px solid #ddd",
+    borderRadius: "8px",
+    padding: "15px",
+    marginBottom: "15px",
+    backgroundColor: "#f9f9f9",
+  },
+  title: {
+    margin: "0 0 8px 0",
+  },
+  link: {
+    textDecoration: "none",
+    color: "#222",
+  },
+  userText: {
+    color: "#666",
+    margin: "0 0 8px 0",
+  },
+  status: {
+    color: "green",
+    fontWeight: "bold",
+    margin: 0,
+  },
+};
+
+export default AdminDashboard;
